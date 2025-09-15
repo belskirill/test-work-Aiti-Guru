@@ -1,0 +1,21 @@
+services:
+  booking_back_service:
+    container_name: 'app'
+    build:
+      context: .
+    ports:
+      - "8000:8000"
+    networks:
+      - myNetwork
+    env_file:
+      - .env
+    command: >
+      sh -c "
+      sqlite3 /app/test.db < /app/sql/schema.sql &&
+      sqlite3 /app/test.db < /app/sql/test_data.sql &&
+      poetry run uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
+      "
+
+networks:
+  myNetwork:
+    external: true
